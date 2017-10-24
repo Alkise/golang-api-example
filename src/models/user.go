@@ -6,17 +6,18 @@ import (
 )
 
 const (
+	selectUsersCount  = "SELECT COUNT(*) AS count FROM users"
 	selectUserSQL     = "SELECT id, email, first_name, last_name, created_at, updated_at FROM users WHERE id=?"
-	selectAllUsersSQL = "SELECT * FROM users"
+	selectAllUsersSQL = "SELECT id, email, first_name, last_name, created_at, updated_at FROM users"
 	insertUserSQL     = "INSERT INTO users(email, first_name, last_name, created_at, updated_at) VALUES(?, ?, ?, ?, ?)"
 )
 
 // User model
 type User struct {
 	Model
-	Email     string `json:"email"`
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
+	Email     string `sql:"email" json:"email"`
+	FirstName string `sql:"first_name" json:"first_name"`
+	LastName  string `sql:"last_name:" json:"last_name"`
 }
 
 // UserCollection Collection of users
@@ -24,7 +25,7 @@ type UserCollection []User
 
 // UsersCount Return users records count
 func UsersCount() (count int, err error) {
-	err = database.Pool.QueryRow("SELECT COUNT(*) as count from users").Scan(&count)
+	err = database.Pool.QueryRow(selectUsersCount).Scan(&count)
 	return count, err
 }
 
