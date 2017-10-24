@@ -22,21 +22,38 @@ type User struct {
 // UserCollection Collection of users
 type UserCollection []User
 
+// UsersCount Return users records count
+func UsersCount() (count int, err error) {
+	err = database.Pool.QueryRow("SELECT COUNT(*) as count from users").Scan(&count)
+	return count, err
+}
+
 // AllUsers Returns all users from database
 func AllUsers() (*UserCollection, error) {
-	return UserCollection{}.All()
+	usersCount, err := UsersCount()
+	if err != nil {
+		return nil, err
+	}
+
+	return make(UserCollection, 0, usersCount).All()
 }
 
 // All Returns all users from database
 func (users UserCollection) All() (*UserCollection, error) {
 	rows, err := database.Pool.Query(selectAllUsersSQL)
-	panicOnErr(err)
+	if err != nil {
+		return nil, err
+	}
+
 	defer rows.Close()
 
+loop:
 	for rows.Next() {
 		user := User{}
 		err = rows.Scan(&user.Model.ID, &user.Email, &user.FirstName, &user.LastName, &user.Model.CreatedAt, &user.Model.UpdatedAt)
-		panicOnErr(err)
+		if err != nil {
+			break loop
+		}
 		users = append(users, user)
 	}
 	return &users, err
@@ -63,13 +80,24 @@ func (user *User) Save() (*User, error) {
 	if user.IsNewRecord() {
 		user.CreatedAt = user.UpdatedAt
 	}
+
 	stmt, err := database.Pool.Prepare(insertUserSQL)
-	panicOnErr(err)
+	if err != nil {
+		return nil, err
+	}
+
 	defer stmt.Close()
+
 	result, err := stmt.Exec(&user.Email, &user.FirstName, &user.LastName, &user.CreatedAt, &user.UpdatedAt)
-	panicOnErr(err)
+	if err != nil {
+		return nil, err
+	}
+
 	user.ID, err = result.LastInsertId()
-	panicOnErr(err)
+	if err != nil {
+		return nil, err
+	}
+
 	return user, nil
 }
 

@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -12,19 +13,15 @@ var (
 )
 
 // InitDB Initialize database connection
-func InitDB(provider string, databaseName string) *sql.DB {
+func InitDB(provider string, databaseName string) (*sql.DB, error) {
 	db, err := sql.Open(provider, databaseName)
 
-	panicOnErr(err)
+	if err != nil {
+		return nil, err
+	}
 
 	if db == nil {
-		panic("db is nil")
+		return nil, errors.New("db is nil")
 	}
-	return db
-}
-
-func panicOnErr(err error) {
-	if err != nil {
-		panic(err)
-	}
+	return db, nil
 }

@@ -52,9 +52,3 @@ func (model *Model) Destroy() (*Model, error) {
 func (model *Model) IsNewRecord() bool {
 	return model.ID == 0
 }
-
-func panicOnErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}

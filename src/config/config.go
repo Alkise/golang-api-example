@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 )
 
@@ -21,13 +20,17 @@ type Configuration struct {
 }
 
 // LoadConfiguration Load configuration from json file
-func LoadConfiguration(filepath string) (config *Configuration) {
+func LoadConfiguration(filepath string) (config *Configuration, err error) {
 	configFile, err := os.Open(filepath)
-	defer configFile.Close()
+
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
 	}
+
+	defer configFile.Close()
+
 	jsonParser := json.NewDecoder(configFile)
 	jsonParser.Decode(&config)
-	return config
+
+	return config, nil
 }
