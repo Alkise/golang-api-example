@@ -1,0 +1,9 @@
+{
+  "database": {
+      "provider": "sqlite3",
+      "host": "./development.sqlite3",
+      "password": ""
+  },
+  "host": "localhost",
+  "port": "3000"
+}
