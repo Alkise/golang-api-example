@@ -20,7 +20,7 @@ type User struct {
 }
 
 // UserCollection Collection of users
-type UserCollection []User
+type UserCollection []*User
 
 // UsersCount Return users records count
 func UsersCount() (count int, err error) {
@@ -54,7 +54,7 @@ loop:
 		if err != nil {
 			break loop
 		}
-		users = append(users, user)
+		users = append(users, &user)
 	}
 	return &users, err
 }

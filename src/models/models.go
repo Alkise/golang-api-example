@@ -15,7 +15,7 @@ type IModel interface {
 
 // ICollection Base collection interface
 type ICollection interface {
-	All() (*[]IModel, error)
+	All() ([]*IModel, error)
 }
 
 // Model Parent struct of all records
@@ -26,7 +26,7 @@ type Model struct {
 }
 
 // ModelsCollection Collection of models
-type ModelsCollection []Model
+type ModelsCollection []*Model
 
 // All Returns all records from database
 func (records ModelsCollection) All() (*ModelsCollection, error) {

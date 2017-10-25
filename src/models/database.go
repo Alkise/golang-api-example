@@ -11,10 +11,11 @@ var db *sql.DB
 // InitDB Initialize database connection
 func InitDB(driver string, dataSourceName string) (*sql.DB, error) {
 	var err error
+
 	db, err = sql.Open(driver, dataSourceName)
 	if err != nil {
 		return nil, err
 	}
-	err = db.Ping()
-	return db, err
+
+	return db, db.Ping()
 }

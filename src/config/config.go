@@ -20,7 +20,7 @@ type Configuration struct {
 }
 
 // LoadConfiguration Load configuration from json file
-func LoadConfiguration(filepath string) (config *Configuration, err error) {
+func LoadConfiguration(filepath string) (*Configuration, error) {
 	configFile, err := os.Open(filepath)
 
 	if err != nil {
@@ -30,7 +30,7 @@ func LoadConfiguration(filepath string) (config *Configuration, err error) {
 	defer configFile.Close()
 
 	jsonParser := json.NewDecoder(configFile)
-	jsonParser.Decode(&config)
+	jsonParser.Decode(&Config)
 
-	return config, nil
+	return Config, nil
 }

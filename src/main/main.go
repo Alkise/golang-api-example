@@ -1,26 +1,22 @@
 package main
 
 import (
-	"database/sql"
 	"net/http"
 
-	. "config"
+	"config"
 	"models"
 )
 
 func main() {
-	var err error
-
-	Config, err = LoadConfiguration("./config.json")
+	conf, err := config.LoadConfiguration("./config.json")
 	panicOnErr(err)
 
-	var db *sql.DB
-	db, err = models.InitDB(Config.Database.Provider, Config.Database.Host)
+	db, err := models.InitDB(conf.Database.Provider, conf.Database.Host)
 	panicOnErr(err)
 
 	defer db.Close()
 
-	http.ListenAndServe(Config.Host+":"+Config.Port, nil)
+	http.ListenAndServe(conf.Host+":"+conf.Port, nil)
 }
 
 func panicOnErr(err error) {
