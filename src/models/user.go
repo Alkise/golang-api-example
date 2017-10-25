@@ -1,7 +1,6 @@
 package models
 
 import (
-	"database"
 	"time"
 )
 
@@ -25,7 +24,7 @@ type UserCollection []User
 
 // UsersCount Return users records count
 func UsersCount() (count int, err error) {
-	err = database.Pool.QueryRow(selectUsersCount).Scan(&count)
+	err = db.QueryRow(selectUsersCount).Scan(&count)
 	return count, err
 }
 
@@ -41,7 +40,7 @@ func AllUsers() (*UserCollection, error) {
 
 // All Returns all users from database
 func (users UserCollection) All() (*UserCollection, error) {
-	rows, err := database.Pool.Query(selectAllUsersSQL)
+	rows, err := db.Query(selectAllUsersSQL)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +66,7 @@ func FindUser(id string) (*User, error) {
 
 // Find Select user by id from database
 func (user User) Find(id string) (*User, error) {
-	err := database.Pool.QueryRow(selectUserSQL, id).Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.CreatedAt, &user.UpdatedAt)
+	err := db.QueryRow(selectUserSQL, id).Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +81,7 @@ func (user *User) Save() (*User, error) {
 		user.CreatedAt = user.UpdatedAt
 	}
 
-	stmt, err := database.Pool.Prepare(insertUserSQL)
+	stmt, err := db.Prepare(insertUserSQL)
 	if err != nil {
 		return nil, err
 	}
